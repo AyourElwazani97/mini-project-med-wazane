@@ -28,24 +28,23 @@ class TaskController extends Controller
             'is_completed' => 'sometimes|boolean',
             'is_important' => 'sometimes|boolean'
         ];
-        $validatedData = $request->validated($rules);
+        $validatedData = $request->validate($rules);
 
         DB::beginTransaction();
         try {
-
-            $task = Task::create([
+            Task::create([
                 'nom_task' => $validatedData['nom_task'],
                 'description' => $validatedData['description'] ?? null,
                 'due_date' => Carbon::parse($validatedData['due_date'])->format("Y-m-d"),
                 'is_completed' => $validatedData['is_completed'] ?? false,
-                'is_important' => $validatedData['is_important'] ?? false
+                'is_important' => $validatedData['is_important'] ?? false,
+                "user_id" => Auth::user()->id
             ]);
             DB::commit();
-            return redirect()->route('tasks.index', $task)
-                ->with('success', 'Task created successfully.');
+            return redirect()->back()->with('success', 'Tâche créée avec succès.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to create task: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Échec de la création de la tâche');
         }
     }
 
