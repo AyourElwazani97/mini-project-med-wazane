@@ -1,11 +1,12 @@
-import { AddNewProjectForm } from '@/components/Projects/Index';
+import { AddNewProjectForm, ProjectGrid } from '@/components/Projects/Index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Projects } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Mes Projects',
@@ -18,6 +19,23 @@ interface ProjectListProps {
 }
 const Index = ({ projects }: ProjectListProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const { flash } = usePage().props as { flash?: Flashes };
+    React.useEffect(() => {
+        if (flash) {
+            if (flash.success) {
+                toast.success(flash.success);
+                router.reload({
+                    only: ['flash'],
+                });
+            }
+            if (flash.error) {
+                toast.error(flash.error);
+                router.reload({
+                    only: ['flash'],
+                });
+            }
+        }
+    }, [flash]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Projects" />
@@ -32,7 +50,9 @@ const Index = ({ projects }: ProjectListProps) => {
                     <SlidersHorizontal />
                 </Button>
             </div>
-            <div className="min-h-8/12 w-full"></div>
+            <div className="min-h-8/12 w-full p-2">
+                <ProjectGrid projects={projects} />
+            </div>
             <AddNewProjectForm isOpen={isOpen} setIsOpen={setIsOpen} />
         </AppLayout>
     );

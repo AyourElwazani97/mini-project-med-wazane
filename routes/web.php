@@ -16,7 +16,11 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::resource("tasks", TaskController::class)->middleware("auth");
 Route::resource("projects", ProjectController::class)->middleware("auth");
-Route::get("admin/projects", [ProjectController::class, "project_admin"])->middleware("auth");
 
+
+Route::middleware("auth")->group(function () {
+    Route::get("admin/projects", [ProjectController::class, "project_admin"]);
+    Route::put("admin/projects/{id}/update", [ProjectController::class, "update_status"])->name("update.status.project.admin");
+});
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

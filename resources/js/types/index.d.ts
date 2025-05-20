@@ -86,4 +86,5 @@ export interface Projects {
     due_date: string;
     created_at: string;
     updated_at: string;
+    time_left?: string;
 }
