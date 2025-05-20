@@ -1,18 +1,9 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { DeleteTaskDialog } from '@/components/Table-tasks/Index';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Task } from '@/types/task';
 import { useForm } from '@inertiajs/react';
-import { Loader2, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 export const taskColumns = [
@@ -74,7 +65,6 @@ export const taskColumns = [
                         onSuccess: () => {
                             setIsDeleteModalOpen(false);
                         },
-                        preserveScroll: true,
                     };
             };
 
@@ -99,30 +89,13 @@ export const taskColumns = [
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-
-                    <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    Cette action supprimera définitivement la tâche "{task.nom_task}". Voulez-vous continuer ?
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                <AlertDialogAction disabled={processing} onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-                                    {processing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Suppression...
-                                        </>
-                                    ) : (
-                                        'Supprimer'
-                                    )}
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <DeleteTaskDialog
+                        handleDelete={handleDelete}
+                        isOpen={isDeleteModalOpen}
+                        processing={processing}
+                        setIsOpen={setIsDeleteModalOpen}
+                        task={task}
+                    />
                 </>
             );
         },

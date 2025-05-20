@@ -10,18 +10,32 @@ import {
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { AddTaskForm, Flashes } from '@/types';
+import { AddTaskForm, Flashes, Tasks } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2, PlusCircle } from 'lucide-react';
 import React from 'react';
 
-export const AddNewTask = ({ isOpen, setIsOpen }) => {
+interface DeleteTaskDialogProps {
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    task: Tasks;
+    processing: boolean;
+    handleDelete: () => void;
+}
+
+interface AddNewTaskProps {
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+}
+
+export const AddNewTask = ({ isOpen, setIsOpen }: AddNewTaskProps) => {
     const [isDateOpen, setIsDateOpen] = React.useState(false);
     const { data, setData, post, processing, reset, errors } = useForm<AddTaskForm>({
         nom_task: '',
@@ -145,3 +159,32 @@ export const AddNewTask = ({ isOpen, setIsOpen }) => {
         </AlertDialog>
     );
 };
+
+// Composant de dialogue de suppression de tâche
+export function DeleteTaskDialog({ isOpen, setIsOpen, task, processing, handleDelete }: DeleteTaskDialogProps) {
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirmer la suppression</DialogTitle>
+                    <DialogDescription>Cette action supprimera définitivement la tâche "{task.nom_task}". Voulez-vous continuer ?</DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setIsOpen(false)}>
+                        Annuler
+                    </Button>
+                    <Button variant="destructive" disabled={processing} onClick={handleDelete}>
+                        {processing ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Suppression...
+                            </>
+                        ) : (
+                            'Supprimer'
+                        )}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+}
