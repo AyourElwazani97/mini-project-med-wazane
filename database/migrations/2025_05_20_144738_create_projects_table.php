@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string("name")->unique();
             $table->text("desc_prj");
             $table->date("due_date");
-            $table->foreignId("created_by")->nullable()->constrained("users", "id")->onDelete("cascade");
+            $table->foreignId("created_by")->constrained("users", "id")->onDelete("cascade");
             $table->string("status")->default("en cours");
             $table->timestamps();
         });

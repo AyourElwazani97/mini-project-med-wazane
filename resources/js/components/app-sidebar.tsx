@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, ListTodo } from 'lucide-react';
+import { FolderGit2, FolderPlus, LayoutGrid, ListTodo } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -15,8 +15,18 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Mes Tâches',
-        href: 'tasks',
+        href: '/tasks',
         icon: ListTodo,
+    },
+    {
+        title: 'Mes Projets',
+        href: '/projects',
+        icon: FolderGit2,
+    },
+    {
+        title: 'Liste Projets',
+        href: '/admin/projects',
+        icon: FolderPlus,
     },
 ];
 
@@ -36,11 +46,9 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-
             <SidebarContent>
                 <NavMain items={mainNavItems} />
             </SidebarContent>
-
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />

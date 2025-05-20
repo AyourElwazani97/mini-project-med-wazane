@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Mes Tâches',
-        href: '/dashboard',
+        href: '/tasks',
     },
 ];
 

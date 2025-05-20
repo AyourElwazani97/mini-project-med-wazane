@@ -35,6 +35,7 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    user_type: string;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;
@@ -66,4 +67,23 @@ export interface AddTaskForm {
 export interface Flashes {
     error?: string | string[] | null;
     success?: string | string[] | null;
+}
+
+export interface AddNewProject {
+    name: string;
+    desc_prj: string;
+    due_date: string;
+    status?: string;
+    [key: string]: any;
+}
+
+export interface Projects {
+    id: number;
+    created_by: number;
+    desc_prj: string;
+    name: string;
+    status: string;
+    due_date: string;
+    created_at: string;
+    updated_at: string;
 }

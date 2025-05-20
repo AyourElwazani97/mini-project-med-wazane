@@ -6,4 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    protected $fillable = [
+        "name",
+        "desc_prj",
+        "due_date",
+        "status",
+        "created_by",
+    ];
+
+    public function project_users()
+    {
+        return $this->hasMany(ProjectUser::class);
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
