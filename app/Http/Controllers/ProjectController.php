@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\ProjectUser;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,17 +37,23 @@ class ProjectController extends Controller
         if (request()->user()->type_user !== "admin") {
             return redirect()->back()->with("error", "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
         }
-
+        $allUsers = User::select(['id', 'name', 'email'])->get();
+        $projectUserIds = ProjectUser::pluck('user_id')->toArray();
         $data = Project::with(["project_users", "project_users.users"])
             ->where("created_by", request()->user()->id)->latest()->get()->map(function ($project) {
                 $project->time_left = Carbon::parse($project->created_at)
-                ->locale("fr")
-                ->diffForHumans(Carbon::parse($project->due_date));
+                    ->locale("fr")
+                    ->diffForHumans(Carbon::parse($project->due_date));
                 return $project;
             });
-
         return Inertia::render("Projects/Admin/Index", [
-            "projects" => $data
+            "projects" => $data,
+            'users' => $allUsers->map(function ($user) use ($projectUserIds) {
+                return [
+                    ...$user->toArray(),
+                    'is_linked' => in_array($user->id, $projectUserIds)
+                ];
+            }),
         ]);
 
     }
@@ -98,9 +105,34 @@ class ProjectController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function addUserToProjects(Request $request, int $id)
+    {
+        $project = Project::findOrFail($id);
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
+        ]);
+
+        // Delete existing project users
+        $project->project_users()->delete();
+
+        // Prepare data for insertion
+        $projectUsers = [];
+        foreach ($request->user_ids as $userId) {
+            $projectUsers[] = [
+                'project_id' => $project->id,
+                'user_id' => $userId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Insert new project users
+        $project->project_users()->insert($projectUsers);
+
+        return redirect()->back()->with('success', 'Utilisateurs mis à jour avec succès');
+    }
+
     public function show(Project $project)
     {
         //

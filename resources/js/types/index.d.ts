@@ -88,3 +88,11 @@ export interface Projects {
     updated_at: string;
     time_left?: string;
 }
+
+export interface Users {
+    is_linked: boolean,
+    id: number,
+    name: string,
+    email: string,
+    [key: string]: any;
+}

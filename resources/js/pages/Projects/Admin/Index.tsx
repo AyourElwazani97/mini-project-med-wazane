@@ -2,7 +2,7 @@ import { AddNewProjectForm, ProjectGrid } from '@/components/Projects/Index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Projects } from '@/types';
+import { BreadcrumbItem, Flashes, Projects, Users } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, SlidersHorizontal } from 'lucide-react';
 import React, { useState } from 'react';
@@ -16,8 +16,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface ProjectListProps {
     projects: Projects[];
+    users: Users[];
 }
-const Index = ({ projects }: ProjectListProps) => {
+const Index = ({ projects, users }: ProjectListProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const { flash } = usePage().props as { flash?: Flashes };
     React.useEffect(() => {
@@ -51,7 +52,7 @@ const Index = ({ projects }: ProjectListProps) => {
                 </Button>
             </div>
             <div className="min-h-8/12 w-full p-2">
-                <ProjectGrid projects={projects} />
+                <ProjectGrid users={users} projects={projects} />
             </div>
             <AddNewProjectForm isOpen={isOpen} setIsOpen={setIsOpen} />
         </AppLayout>
