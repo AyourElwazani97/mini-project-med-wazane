@@ -24,7 +24,7 @@ class ProjectController extends Controller
             ->with(["projects"])
             ->get();
         return Inertia::render("Projects/Index", [
-            "projects" => $data
+            "assignments" => $data
         ]);
     }
 

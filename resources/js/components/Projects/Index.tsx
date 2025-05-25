@@ -31,7 +31,7 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { AddNewProject, Projects, Users } from '@/types';
+import { AddNewProject, Projects, UserProjectAssignment, Users } from '@/types';
 import { router, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import {
@@ -507,10 +507,8 @@ const ListeContributors = ({ users, setIsOpen, isOpen, projectId }: UsersModaleP
     });
 
     const handleToggle = (userId: number) => {
-        const newUserIds = data.user_ids.includes(userId) 
-            ? data.user_ids.filter((id) => id !== userId) 
-            : [...data.user_ids, userId];
-        
+        const newUserIds = data.user_ids.includes(userId) ? data.user_ids.filter((id) => id !== userId) : [...data.user_ids, userId];
+
         setData('user_ids', newUserIds);
     };
 
@@ -548,13 +546,8 @@ const ListeContributors = ({ users, setIsOpen, isOpen, projectId }: UsersModaleP
                                 <TableCell>{user.name}</TableCell>
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>
-                                    <Switch 
-                                        checked={data.user_ids.includes(user.id)} 
-                                        onCheckedChange={() => handleToggle(user.id)} 
-                                    />
-                                    <span className="ml-2">
-                                        {data.user_ids.includes(user.id) ? 'Ajouté' : 'Non ajouté'}
-                                    </span>
+                                    <Switch checked={data.user_ids.includes(user.id)} onCheckedChange={() => handleToggle(user.id)} />
+                                    <span className="ml-2">{data.user_ids.includes(user.id) ? 'Ajouté' : 'Non ajouté'}</span>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -571,3 +564,100 @@ const ListeContributors = ({ users, setIsOpen, isOpen, projectId }: UsersModaleP
         </AlertDialog>
     );
 };
+
+interface ProjectGridEachUserProps {
+    assignments?: UserProjectAssignment[]; // Optional with default empty array
+}
+
+export function ProjectGridEachUser({ assignments = [] }: ProjectGridEachUserProps) {
+    console.log(assignments);
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('fr-FR', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        }).format(date);
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'terminé':
+                return 'bg-green-100 text-green-800 border-green-200';
+            case 'en cours':
+                return 'bg-blue-100 text-blue-800 border-blue-200';
+            case 'en attente':
+                return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+            case 'annulé':
+                return 'bg-red-100 text-red-800 border-red-200';
+            default:
+                return 'bg-gray-100 text-gray-800 border-gray-200';
+        }
+    };
+
+    return (
+        <>
+            {assignments.length <= 0 ? (
+                <div className="flex w-full flex-col items-center justify-center">
+                    <img src={'/nodata.svg'} width={300} height={300} />
+                    <p className="font-medium">Aucune données trouvée</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {assignments.map((assignment) => {
+                        const project = assignment.projects;
+                        return (
+                            <Card
+                                key={project.id}
+                                className="overflow-hidden pb-0 transition-all duration-200 hover:translate-y-[-2px] hover:border-gray-300 hover:shadow-lg"
+                            >
+                                <CardHeader className="pb-2">
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <h3 className="line-clamp-1 text-xl font-semibold">{project.name || `Projet ${project.id}`}</h3>
+                                            <p className="text-muted-foreground text-sm">Projet N° #{project.id}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Badge className={`${getStatusColor(project.status)} border font-medium`}>{project.status}</Badge>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+
+                                <CardContent className="pb-4">
+                                    <p className="line-clamp-3 min-h-[60px] text-sm text-gray-600">
+                                        {project.desc_prj || 'Aucune description disponible'}
+                                    </p>
+
+                                    <div className="mt-4 space-y-2">
+                                        <div className="flex items-center text-sm text-gray-500">
+                                            <CalendarDays className="mr-2 h-4 w-4" />
+                                            <span>Date d'échéance: {project.due_date ? formatDate(project.due_date) : 'Non définie'}</span>
+                                        </div>
+
+                                        <div className="flex items-center text-sm text-gray-500">
+                                            <Clock className="mr-2 h-4 w-4" />
+                                            <span>Créé le : {formatDate(project.created_at)}</span>
+                                        </div>
+
+                                        {project.time_left && (
+                                            <div className="flex items-center text-sm text-gray-500">
+                                                <ClockAlert className="mr-2 h-4 w-4" />
+                                                <span>Échéance dans : {project.time_left}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardContent>
+
+                                <CardFooter className="bg-muted border-t">
+                                    <div className="w-full px-0 py-2 text-center">
+                                        <span className="text-xs">Dernière mise à jour : {formatDate(project.updated_at)}</span>
+                                    </div>
+                                </CardFooter>
+                            </Card>
+                        );
+                    })}
+                </div>
+            )}
+        </>
+    );
+}

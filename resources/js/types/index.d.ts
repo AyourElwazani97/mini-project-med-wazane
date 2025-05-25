@@ -96,3 +96,9 @@ export interface Users {
     email: string,
     [key: string]: any;
 }
+
+export interface UserProjectAssignment {
+  id: number;
+  project_id: number;
+  projects: Project; // Singular - one project per assignment
+}
