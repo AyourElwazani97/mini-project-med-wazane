@@ -9,16 +9,15 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Mes Projects',
+        title: 'Mes Projets',
         href: '/admin/projects',
     },
 ];
 
 interface ProjectListProps {
     projects: Projects[];
-    users: Users[];
 }
-const Index = ({ projects, users }: ProjectListProps) => {
+const Index = ({ projects }: ProjectListProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const { flash } = usePage().props as { flash?: Flashes };
     React.useEffect(() => {
@@ -39,7 +38,7 @@ const Index = ({ projects, users }: ProjectListProps) => {
     }, [flash]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Mes Projects" />
+            <Head title="Mes Projets" />
             <div className="flex w-full justify-start gap-2 p-2">
                 <div>
                     <Input type="text" placeholder="Filtrer par Nom"></Input>
@@ -52,7 +51,7 @@ const Index = ({ projects, users }: ProjectListProps) => {
                 </Button>
             </div>
             <div className="min-h-8/12 w-full p-2">
-                <ProjectGrid users={users} projects={projects} />
+                <ProjectGrid projects={projects} />
             </div>
             <AddNewProjectForm isOpen={isOpen} setIsOpen={setIsOpen} />
         </AppLayout>

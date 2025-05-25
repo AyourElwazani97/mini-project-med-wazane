@@ -1,6 +1,5 @@
 import {
     AlertDialog,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
@@ -27,25 +26,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { AddNewProject, Projects, UserProjectAssignment, Users } from '@/types';
-import { router, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import {
     CalendarDays,
     Calendar as CalendarIcon,
     Clock,
     ClockAlert,
+    Eye,
     Loader2,
     MoreVertical,
     PenLine,
     PlusCircle,
     RefreshCw,
     Trash2,
-    UserPlus,
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -54,9 +51,12 @@ interface AddNewProjectProps {
     setIsOpen: (open: boolean) => void;
 }
 
+interface ProjectGridEachUserProps {
+    assignments?: UserProjectAssignment[]; // Optional with default empty array
+}
+
 interface ProjectGridProps {
     projects: Projects[];
-    users: Users[];
     projectId: number;
 }
 
@@ -207,10 +207,8 @@ export const AddNewProjectForm = ({ isOpen, setIsOpen }: AddNewProjectProps) => 
     );
 };
 
-export function ProjectGrid({ projects, users }: ProjectGridProps) {
+export function ProjectGrid({ projects }: ProjectGridProps) {
     const [isEditModale, setIsEditModale] = useState(false);
-    const [isUsersModale, setIsUsersModale] = useState(false);
-    const [projectId, setProjectId] = useState<number>();
     const [projectData, setProjectData] = useState<Projects>({
         id: 0,
         created_by: 0,
@@ -297,16 +295,6 @@ export function ProjectGrid({ projects, users }: ProjectGridProps) {
                                                             <PenLine className="mr-2 h-4 w-4" />
                                                             Modifier
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="cursor-pointer"
-                                                            onClick={() => {
-                                                                setIsUsersModale(true);
-                                                                setProjectId(project.id);
-                                                            }}
-                                                        >
-                                                            <UserPlus className="mr-2 h-4 w-4" />
-                                                            Contributeurs
-                                                        </DropdownMenuItem>
                                                         <DropdownMenuSub>
                                                             <DropdownMenuSubTrigger className="cursor-pointer">
                                                                 <RefreshCw className="mr-2 h-4 w-4" />
@@ -324,6 +312,14 @@ export function ProjectGrid({ projects, users }: ProjectGridProps) {
                                                                 ))}
                                                             </DropdownMenuSubContent>
                                                         </DropdownMenuSub>
+                                                        <Link href={route('projects.show', project.id)}>
+                                                            <DropdownMenuItem
+                                                                className="cursor-pointer"
+                                                            >
+                                                                <Eye className="mr-2 h-4 w-4" />
+                                                                Voir Plus
+                                                            </DropdownMenuItem>
+                                                        </Link>
                                                     </>
                                                 )}
                                                 <DropdownMenuItem
@@ -372,7 +368,6 @@ export function ProjectGrid({ projects, users }: ProjectGridProps) {
                 </div>
             )}
             <UpdateProjectForm project={projectData} isOpen={isEditModale} setIsOpen={setIsEditModale} />
-            <ListeContributors users={users} isOpen={isUsersModale} setIsOpen={setIsUsersModale} projectId={Number(projectId)} />
         </>
     );
 }
@@ -500,74 +495,6 @@ const UpdateProjectForm = ({ isOpen, setIsOpen, project }: UpdateProjectProps) =
         </AlertDialog>
     );
 };
-
-const ListeContributors = ({ users, setIsOpen, isOpen, projectId }: UsersModaleProps) => {
-    const { data, setData, put, processing } = useForm({
-        user_ids: users.filter((u) => u.is_linked).map((u) => u.id),
-    });
-
-    const handleToggle = (userId: number) => {
-        const newUserIds = data.user_ids.includes(userId) ? data.user_ids.filter((id) => id !== userId) : [...data.user_ids, userId];
-
-        setData('user_ids', newUserIds);
-    };
-
-    const submit = () => {
-        put(route('assign.users.project.admin', projectId), {
-            preserveScroll: true,
-            onSuccess: () => setIsOpen(false),
-        });
-    };
-
-    return (
-        <AlertDialog open={isOpen}>
-            <AlertDialogTrigger className="sr-only" asChild>
-                <Button className="rounded-md bg-blue-500 px-4 py-2 text-white">Afficher les contributeurs</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="max-w-4xl">
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Liste des contributeurs</AlertDialogTitle>
-                    <AlertDialogDescription>Gérez les utilisateurs associés à ce projet</AlertDialogDescription>
-                </AlertDialogHeader>
-
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Nom</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Statut</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {users.map((user) => (
-                            <TableRow key={user.id}>
-                                <TableCell>{user.id}</TableCell>
-                                <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>
-                                    <Switch checked={data.user_ids.includes(user.id)} onCheckedChange={() => handleToggle(user.id)} />
-                                    <span className="ml-2">{data.user_ids.includes(user.id) ? 'Ajouté' : 'Non ajouté'}</span>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setIsOpen(false)}>Annuler</AlertDialogCancel>
-                    <Button onClick={submit} disabled={processing} className="bg-green-600 hover:bg-green-700">
-                        {processing ? 'Enregistrement...' : 'Enregistrer'}
-                    </Button>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    );
-};
-
-interface ProjectGridEachUserProps {
-    assignments?: UserProjectAssignment[]; // Optional with default empty array
-}
 
 export function ProjectGridEachUser({ assignments = [] }: ProjectGridEachUserProps) {
     console.log(assignments);

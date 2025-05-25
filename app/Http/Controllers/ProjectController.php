@@ -20,7 +20,7 @@ class ProjectController extends Controller
     {
         //get mes project
         $data = ProjectUser::where("user_id", Auth::user()->id)
-            ->select(["id","project_id"])
+            ->select(["id", "project_id"])
             ->with(["projects"])
             ->get();
         return Inertia::render("Projects/Index", [
@@ -106,35 +106,49 @@ class ProjectController extends Controller
 
     public function addUserToProjects(Request $request, int $id)
     {
-        $project = Project::findOrFail($id);
-        $request->validate([
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id',
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
-        // Delete existing project users
-        $project->project_users()->delete();
+        $project = Project::find($id);
+        if (!$project) {
+            return redirect()->back()->with('error', 'Projet non trouvé');
+        }
 
-        // Prepare data for insertion
-        $projectUsers = [];
-        foreach ($request->user_ids as $userId) {
-            $projectUsers[] = [
+        $userId = $validated['user_id'];
+
+        $isUserInProject = $project->project_users()
+            ->where('user_id', $userId)
+            ->exists();
+
+        if ($isUserInProject) {
+            $project->project_users()->where('user_id', $userId)->delete();
+            $message = 'Utilisateur retiré du projet avec succès';
+        } else {
+            $project->project_users()->create([
                 'project_id' => $project->id,
                 'user_id' => $userId,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ];
+            ]);
+            $message = 'Utilisateur ajouté au projet avec succès';
         }
 
-        // Insert new project users
-        $project->project_users()->insert($projectUsers);
-
-        return redirect()->back()->with('success', 'Utilisateurs mis à jour avec succès');
+        return redirect()->back()->with('success', $message);
     }
 
     public function show(Project $project)
     {
-        //
+        $project->load(['project_users.users']);
+        $allUsers = User::
+            whereNotIn('id', $project->project_users->pluck('user_id'))
+            ->where("type_user", "!=", "admin")
+            ->get()->toArray();
+
+        return Inertia::render("Projects/Admin/Show", [
+            'project' => $project,
+            'allUsers' => $allUsers,
+        ]);
     }
 
     /**

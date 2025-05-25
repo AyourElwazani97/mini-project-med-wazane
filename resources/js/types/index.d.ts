@@ -89,6 +89,18 @@ export interface Projects {
     time_left?: string;
 }
 
+export interface EachProject {
+    id: number;
+    created_by: number;
+    desc_prj: string;
+    name: string;
+    status: string;
+    due_date: string;
+    created_at: string;
+    updated_at: string;
+    time_left?: string;
+}
+
 export interface Users {
     is_linked: boolean,
     id: number,
@@ -100,5 +112,5 @@ export interface Users {
 export interface UserProjectAssignment {
   id: number;
   project_id: number;
-  projects: Project; // Singular - one project per assignment
+  projects: Projects; // Singular - one project per assignment
 }
