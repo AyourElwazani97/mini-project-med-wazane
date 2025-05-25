@@ -11,9 +11,9 @@ class ProjectUser extends Model
         "user_id"
     ];
 
-    public function project()
+    public function projects()
     {
-        return $this->belongsTo(Project::class, "id");
+        return $this->belongsTo(Project::class, "project_id");
     }
 
     public function users()

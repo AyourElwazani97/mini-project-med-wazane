@@ -10,7 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/projects',
     },
 ];
-const Index = () => {
+const Index = ({ projects }) => {
+    console.log(projects)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Projects" />

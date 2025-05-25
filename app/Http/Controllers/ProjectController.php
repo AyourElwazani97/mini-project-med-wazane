@@ -19,13 +19,10 @@ class ProjectController extends Controller
     public function index()
     {
         //get mes project
-        $data = [];
-        $related_user = ProjectUser::where("user_id", Auth::user()->id)
-            ->with("project")
+        $data = ProjectUser::where("user_id", Auth::user()->id)
+            ->select(["id","project_id"])
+            ->with(["projects"])
             ->get();
-        if (!isEmpty($related_user)) {
-            $data = Project::where("id", $related_user->project_id)->get();
-        }
         return Inertia::render("Projects/Index", [
             "projects" => $data
         ]);
@@ -37,9 +34,11 @@ class ProjectController extends Controller
         if (request()->user()->type_user !== "admin") {
             return redirect()->back()->with("error", "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
         }
-        $allUsers = User::select(['id', 'name', 'email'])->get();
+        $allUsers = User::select(['id', 'name', 'email', 'type_user'])
+            ->where("type_user", "!=", "admin")
+            ->get();
         $projectUserIds = ProjectUser::pluck('user_id')->toArray();
-        $data = Project::with(["project_users", "project_users.users"])
+        $data = Project::with(["project_users"])
             ->where("created_by", request()->user()->id)->latest()->get()->map(function ($project) {
                 $project->time_left = Carbon::parse($project->created_at)
                     ->locale("fr")
