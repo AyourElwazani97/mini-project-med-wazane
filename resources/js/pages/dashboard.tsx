@@ -112,6 +112,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, pr
 
                         {/* Table */}
                         <div className="flex-1 overflow-auto">
+                            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/10" />
                             {projects.length === 0 ? (
                                 <div className="flex h-full items-center justify-center">
                                     <div className="text-center">

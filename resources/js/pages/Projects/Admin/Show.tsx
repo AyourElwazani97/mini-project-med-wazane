@@ -73,7 +73,7 @@ const Index = () => {
                 <div className="mb-8">
                     <h3 className="mb-2 text-lg font-medium">Membres du projet</h3>
                     {project.project_users.length === 0 ? (
-                        <p className="text-muted">Aucun membre pour le moment</p>
+                        <p className="text-muted-foreground">Aucun membre pour le moment</p>
                     ) : (
                         <div className="space-y-2">
                             {project.project_users.map(({ users }) => (
@@ -91,7 +91,7 @@ const Index = () => {
                 <div>
                     <h3 className="mb-2 text-lg font-medium">Ajouter de nouveaux membres</h3>
                     {allUsers.length === 0 ? (
-                        <p className="text-muted">Aucun utilisateur disponible à ajouter</p>
+                        <p className="text-muted-foreground">Aucun utilisateur disponible à ajouter</p>
                     ) : (
                         <div className="space-y-2">
                             {allUsers.map((user) => (
