@@ -12,18 +12,22 @@ class Task extends Model
         "due_date",
         "is_completed",
         "is_important",
-        "user_id"
+        "user_id",
+        "owner_id",
     ];
 
-    protected $casts = [  // Recommended: Cast booleans and dates
+    protected $casts = [
         'due_date' => 'datetime',
         'is_completed' => 'boolean',
         'is_important' => 'boolean'
     ];
 
-    // Relationship to user
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, "user_id");
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, "owner_id");
     }
 }
