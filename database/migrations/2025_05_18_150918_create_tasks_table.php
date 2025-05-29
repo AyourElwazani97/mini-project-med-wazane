@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->index("due_date");
             $table->boolean("is_completed")->default(false);
             $table->boolean("is_important")->default(false);
-            $table->foreignId("user_id")->constrained()->onDelete("cascade");
+            $table->foreignId("user_id")->constrained("users", "id")->onDelete("cascade");
+            $table->foreignId("owner_id")->nullable()->constrained("users", "id")->onDelete("cascade");
             $table->timestamps();
         });
     }
