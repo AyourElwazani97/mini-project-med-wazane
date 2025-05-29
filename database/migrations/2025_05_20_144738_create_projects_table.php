@@ -13,8 +13,10 @@ return new class extends Migration {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string("name")->unique();
+            $table->index("name")->unique();
             $table->text("desc_prj");
             $table->date("due_date");
+            $table->index("due_date");
             $table->foreignId("created_by")->constrained("users", "id")->onDelete("cascade");
             $table->string("status")->default("en cours");
             $table->timestamps();

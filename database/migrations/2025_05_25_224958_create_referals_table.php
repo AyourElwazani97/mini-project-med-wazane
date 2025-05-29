@@ -13,7 +13,9 @@ return new class extends Migration {
         Schema::create('referals', function (Blueprint $table) {
             $table->id();
             $table->string("nom_ref");
+            $table->index("nom_ref");
             $table->date("date_expiration");
+            $table->index("date_expiration");
             $table->timestamps();
         });
     }

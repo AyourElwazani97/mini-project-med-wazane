@@ -13,10 +13,12 @@ return new class extends Migration {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string("nom_task");
-            $table->text("description")->nullable();  // For more detailed task info
-            $table->date("due_date")->nullable(); // Deadline for the task
-            $table->boolean("is_completed")->default(false); // Task completion status
-            $table->boolean("is_important")->default(false); // Priority flag
+            $table->index("nom_task");
+            $table->text("description")->nullable();
+            $table->date("due_date")->nullable();
+            $table->index("due_date");
+            $table->boolean("is_completed")->default(false);
+            $table->boolean("is_important")->default(false);
             $table->foreignId("user_id")->constrained()->onDelete("cascade");
             $table->timestamps();
         });
