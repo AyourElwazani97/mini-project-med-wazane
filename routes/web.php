@@ -18,7 +18,7 @@ Route::resource("invitations", ReferalController::class)->middleware("auth");
 
 
 Route::middleware("auth")->group(function () {
-    Route::get("admin/projects", [ProjectController::class, "project_admin"]);
+    Route::get("admin/projects", [ProjectController::class, "project_admin"])->name("projects.admin");
     Route::put("admin/projects/{id}/update", [ProjectController::class, "update_status"])->name("update.status.project.admin");
     Route::put("admin/projects/{id}/assign/users", [ProjectController::class, "addUserToProjects"])->name("assign.users.project.admin");
 });

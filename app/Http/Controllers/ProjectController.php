@@ -19,6 +19,9 @@ class ProjectController extends Controller
     public function index()
     {
         //get mes project
+        if (Auth::user()->type_user === "admin") {
+            return redirect()->route("projects.admin");
+        }
         $data = ProjectUser::where("user_id", Auth::user()->id)
             ->select(["id", "project_id"])
             ->with(["projects"])
