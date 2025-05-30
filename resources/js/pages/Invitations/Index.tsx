@@ -39,7 +39,7 @@ const Index = ({ invitations }: InviationListProps) => {
     console.log(invitations)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Mes Tâches" />
+            <Head title="Mes Invitations" />
             <DataTable data={invitations} columns={inviationColumns} />
         </AppLayout>
     );
