@@ -16,6 +16,9 @@ class ReferalController extends Controller
      */
     public function index()
     {
+        if (request()->user()->type_user !== "admin") {
+            return redirect()->back()->with("error", "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
         /* DB::table('referals')->select("id","nom_ref", "date_expiration")->get(); */
         $today = Carbon::today();
         $invitations = Referal::select("id", "nom_ref", "date_expiration")->latest()->get()->map(function ($invitation) use ($today) {
