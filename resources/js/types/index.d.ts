@@ -67,6 +67,7 @@ export interface AddTaskForm {
 export interface Flashes {
     error?: string | string[] | null;
     success?: string | string[] | null;
+    data?: string | string[] | null;
 }
 
 export interface AddNewProject {

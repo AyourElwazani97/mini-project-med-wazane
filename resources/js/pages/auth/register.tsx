@@ -3,15 +3,18 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Flashes } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
+    referal: string;
 };
 
 export default function Register() {
@@ -20,19 +23,29 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        referal: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+            onSuccess: ({ props }) => {
+                const { success, error } = props.flash as Flashes;
+                if (success) {
+                    toast.success(success);
+                    return;
+                } else {
+                    toast.error(error);
+                }
+            },
+            preserveScroll: true,
         });
     };
 
     return (
         <>
             <Head title="S'scrire" />
-            <div className="relative flex h-screen w-full flex-col items-center justify-center">
+            <div className="relative flex min-h-screen w-full flex-col items-center justify-center">
                 <div className="h-full w-full max-w-7xl px-6 lg:px-8">
                     <div className="relative isolate flex items-center justify-center pt-14 pb-20 lg:pt-20">
                         <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
@@ -49,7 +62,6 @@ export default function Register() {
                                 <h2 className="text-2xl font-semibold">Créer un compte</h2>
                                 <p className="text-muted-foreground mt-1 text-sm">Veuillez remplir les champs ci-dessous</p>
                             </div>
-
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Nom</Label>
@@ -85,12 +97,27 @@ export default function Register() {
                                 </div>
 
                                 <div className="grid gap-2">
+                                    <Label htmlFor="referal">Invitation</Label>
+                                    <Input
+                                        id="referal"
+                                        type="text"
+                                        required
+                                        tabIndex={3}
+                                        value={data.referal}
+                                        onChange={(e) => setData('referal', e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Invitation"
+                                    />
+                                    <InputError message={errors.referal} />
+                                </div>
+
+                                <div className="grid gap-2">
                                     <Label htmlFor="password">Mot de passe</Label>
                                     <Input
                                         id="password"
                                         type="password"
                                         required
-                                        tabIndex={3}
+                                        tabIndex={4}
                                         autoComplete="new-password"
                                         value={data.password}
                                         onChange={(e) => setData('password', e.target.value)}
@@ -106,7 +133,7 @@ export default function Register() {
                                         id="password_confirmation"
                                         type="password"
                                         required
-                                        tabIndex={4}
+                                        tabIndex={5}
                                         autoComplete="new-password"
                                         value={data.password_confirmation}
                                         onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -121,7 +148,6 @@ export default function Register() {
                                     Créer un compte
                                 </Button>
                             </div>
-
                             <div className="text-muted-foreground text-center text-sm">
                                 Vous avez déjà un compte ?{' '}
                                 <TextLink href={route('login')} tabIndex={6}>
