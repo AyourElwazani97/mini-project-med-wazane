@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Referal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ReferalController extends Controller
 {
@@ -12,7 +14,10 @@ class ReferalController extends Controller
      */
     public function index()
     {
-        //
+        $data = DB::table('referals')->select("nom_ref", "date_expiration")->get();
+        return Inertia::render("Invitations/Index", [
+            "invitations" => $data
+        ]);
     }
 
     /**

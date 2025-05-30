@@ -111,7 +111,12 @@ export interface Users {
 }
 
 export interface UserProjectAssignment {
-  id: number;
-  project_id: number;
-  projects: Projects; // Singular - one project per assignment
+    id: number;
+    project_id: number;
+    projects: Projects; // Singular - one project per assignment
+}
+
+export interface Inviations {
+    nom_ref: string;
+    date_expiration: string;
 }

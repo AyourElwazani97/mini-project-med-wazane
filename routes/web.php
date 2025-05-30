@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReferalController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,6 +14,7 @@ Route::get('/', function () {
 Route::get('dashboard', [DashboardController::class, "index"])->middleware(['auth'])->name('dashboard');
 Route::resource("tasks", TaskController::class)->middleware("auth");
 Route::resource("projects", ProjectController::class)->middleware("auth");
+Route::resource("invitations", ReferalController::class)->middleware("auth");
 
 
 Route::middleware("auth")->group(function () {
