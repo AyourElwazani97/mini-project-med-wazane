@@ -9,14 +9,12 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { AddTaskForm, Flashes, Tasks } from '@/types';
+import { AddInvForm, Flashes, Tasks } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2, PlusCircle } from 'lucide-react';
@@ -30,26 +28,23 @@ interface DeleteTaskDialogProps {
     handleDelete: () => void;
 }
 
-interface AddNewTaskProps {
+interface AddNewInvProps {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
 }
 
-export const AddNewTask = ({ isOpen, setIsOpen }: AddNewTaskProps) => {
+export const AddNewInvitation = ({ isOpen, setIsOpen }: AddNewInvProps) => {
     const [isDateOpen, setIsDateOpen] = React.useState(false);
-    const { data, setData, post, processing, reset, errors } = useForm<AddTaskForm>({
-        nom_task: '',
-        description: '',
-        due_date: format(new Date(), 'dd-MM-yyyy'),
-        is_completed: false,
-        is_important: false,
+    const { data, setData, post, processing, reset, errors } = useForm<AddInvForm>({
+        nom_ref: '',
+        date_expiration: format(new Date(), 'dd-MM-yyyy'),
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('tasks.store'), {
+        post(route('invitations.store'), {
             onSuccess: ({ props }) => {
-                const { success, error } = props.flash as Flashes;
+                const { success } = props.flash as Flashes;
                 if (success) {
                     setIsOpen(false);
                     reset();
@@ -65,60 +60,48 @@ export const AddNewTask = ({ isOpen, setIsOpen }: AddNewTaskProps) => {
             <AlertDialogTrigger asChild>
                 <Button className="sr-only gap-2">
                     <PlusCircle className="h-4 w-4" />
-                    Nouvelle tâche
+                    Nouvelle invitation
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <form onSubmit={handleSubmit}>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Ajouter une nouvelle tâche</AlertDialogTitle>
-                        <AlertDialogDescription>Remplissez les détails de votre nouvelle tâche</AlertDialogDescription>
+                        <AlertDialogTitle>Ajouter une nouvelle invitation</AlertDialogTitle>
+                        <AlertDialogDescription>Remplissez les détails de votre nouvelle invitation</AlertDialogDescription>
                     </AlertDialogHeader>
-
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="nom_task">Nom de la tâche</Label>
+                            <Label htmlFor="nom_ref">Nom de l'invitation</Label>
                             <Input
-                                id="nom_task"
-                                value={data.nom_task}
-                                onChange={(e) => setData('nom_task', e.target.value)}
-                                placeholder="Nom de la tâche"
-                                className={errors.nom_task ? 'border-red-500' : ''}
+                                id="nom_ref"
+                                value={data.nom_ref}
+                                autoComplete="nom_ref"
+                                onChange={(e) => setData('nom_ref', e.target.value)}
+                                placeholder="Nom de l'invitation"
+                                className={errors.nom_ref ? 'border-red-500' : ''}
                             />
-                            {errors.nom_task && <p className="text-sm text-red-500">{errors.nom_task}</p>}
+                            {errors.nom_ref && <p className="text-sm text-red-500">{errors.nom_ref}</p>}
                         </div>
-
                         <div className="grid gap-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                value={data.description}
-                                onChange={(e) => setData('description', e.target.value)}
-                                placeholder="Description (optionnelle)"
-                                rows={3}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="due_date">Date d'échéance</Label>
+                            <Label htmlFor="due_date">Date d'éxpiration</Label>
                             <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
                                         variant={'outline'}
-                                        className={cn('w-full justify-start text-left font-normal', !data.due_date && 'text-muted-foreground')}
+                                        className={cn('w-full justify-start text-left font-normal', !data.date_expiration && 'text-muted-foreground')}
                                     >
                                         <CalendarIcon />
-                                        {data.due_date ? data.due_date : <span>Date d'échéance</span>}
+                                        {data.date_expiration ? data.date_expiration : <span>Date d'éxpiration</span>}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
                                         mode="single"
-                                        selected={data.due_date}
-                                        onSelect={(value) => {
+                                        selected={data.date_expiration}
+                                        onSelect={(value: string) => {
                                             setData((prev) => ({
                                                 ...prev,
-                                                due_date: format(value, 'dd-MM-yyyy'),
+                                                date_expiration: format(value, 'dd-MM-yyyy'),
                                             }));
                                             setIsDateOpen(false);
                                         }}
@@ -126,16 +109,7 @@ export const AddNewTask = ({ isOpen, setIsOpen }: AddNewTaskProps) => {
                                     />
                                 </PopoverContent>
                             </Popover>
-                            {errors.due_date && <p className="text-sm text-red-500">{errors.due_date}</p>}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <Checkbox
-                                id="is_important"
-                                checked={data.is_important}
-                                onCheckedChange={(checked) => setData('is_important', Boolean(checked))}
-                            />
-                            <Label htmlFor="is_important">Tâche importante</Label>
+                            {errors.date_expiration && <p className="text-sm text-red-500">{errors.date_expiration}</p>}
                         </div>
                     </div>
 

@@ -120,3 +120,9 @@ export interface Inviations {
     nom_ref: string;
     date_expiration: string;
 }
+
+export interface AddInvForm {
+    nom_ref: string;
+    date_expiration: string;
+    [key: string]: any;
+}

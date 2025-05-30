@@ -11,4 +11,5 @@ class Referal extends Model
         "date_expiration",
     ];
 
+    protected $casts = ['date_expiration' => 'datetime'];
 }

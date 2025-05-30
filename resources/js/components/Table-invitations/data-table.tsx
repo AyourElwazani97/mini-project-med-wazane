@@ -5,13 +5,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { FileSpreadsheet, Plus } from 'lucide-react';
 import { Fragment, useState } from 'react';
-import { AddNewTask } from './Index';
+import { AddNewInvitation } from '@/components/Table-invitations/Index';
 export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [globalFilter, setGlobalFilter] = useState('');
-    const [openTaskFormModale, setOpenTaskFormModale] = useState(false);
+    const [openFormModale, setOpenFormModale] = useState(false);
 
     const table = useReactTable({
         data,
@@ -47,7 +47,7 @@ export function DataTable({ columns, data }) {
                         }}
                         className="max-w-sm"
                     />
-                    <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setOpenTaskFormModale(true)}>
+                    <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setOpenFormModale(true)}>
                         <Plus />
                     </Button>
                     <DropdownMenu>
@@ -125,7 +125,7 @@ export function DataTable({ columns, data }) {
                     </Button>
                 </div>
             </div>
-            <AddNewTask isOpen={openTaskFormModale} setIsOpen={setOpenTaskFormModale} />
+            <AddNewInvitation isOpen={openFormModale} setIsOpen={setOpenFormModale} />
         </Fragment>
     );
 }
