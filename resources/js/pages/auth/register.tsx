@@ -7,7 +7,7 @@ import { Flashes } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 
 type RegisterForm = {
     name: string;
@@ -45,6 +45,7 @@ export default function Register() {
     return (
         <>
             <Head title="S'scrire" />
+            <Toaster richColors />
             <div className="relative flex min-h-screen w-full flex-col items-center justify-center">
                 <div className="h-full w-full max-w-7xl px-6 lg:px-8">
                     <div className="relative isolate flex items-center justify-center pt-14 pb-20 lg:pt-20">

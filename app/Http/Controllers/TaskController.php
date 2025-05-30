@@ -19,6 +19,10 @@ class TaskController extends Controller
         ]);
     }
 
+    public function show()
+    {
+    }
+
     public function store(Request $request)
     {
         $rules = [
@@ -52,7 +56,7 @@ class TaskController extends Controller
     {
         // Vérification que la tâche existe et appartient à l'utilisateur
         if (!$task || Auth::user()->id !== $task->user_id) {
-            return redirect()->route('tasks.index')
+            return redirect()->back()
                 ->with('error', 'Action non autorisée.');
         }
 
@@ -65,8 +69,7 @@ class TaskController extends Controller
         ];
 
         // Champs validés
-        $validatedData = $request->validated($rules);
-
+        $validatedData = $request->validate($rules);
         DB::beginTransaction();
         try {
             $task->update([
@@ -76,12 +79,9 @@ class TaskController extends Controller
                 'is_completed' => $validatedData['is_completed'] ?? false,
                 'is_important' => $validatedData['is_important'] ?? false
             ]);
-
             DB::commit();
-
-            return redirect()->route('tasks.show', $task)
+            return redirect()->back()
                 ->with('success', 'Tâche mise à jour avec succès.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Échec de la mise à jour.');

@@ -1,8 +1,9 @@
-import { DeleteTaskDialog } from '@/components/Table-tasks/Index';
+import { DeleteTaskDialog, UpdateTaskFormUI } from '@/components/Table-tasks/Index';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Task } from '@/types/task';
 import { useForm } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -24,7 +25,7 @@ export const taskColumns = [
         header: 'Échéance',
         cell: ({ row }) => {
             const date = row.getValue('due_date') as string;
-            return date ? new Date(date).toLocaleDateString() : 'Non définie';
+            return date ? format(date, 'dd-MM-yyyy') : 'Non définie';
         },
     },
     {
@@ -57,6 +58,7 @@ export const taskColumns = [
         cell: ({ row }) => {
             const task = row.original as Task;
             const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+            const [isEditModale, setIsEditModale] = useState(false);
             const { delete: destroy, processing } = useForm();
 
             const handleDelete = () => {
@@ -79,7 +81,12 @@ export const taskColumns = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem className="cursor-pointer" onClick={() => (window.location.href = route('tasks.edit', task.id))}>
+                            <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    setIsEditModale(true);
+                                }}
+                            >
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Modifier
                             </DropdownMenuItem>
@@ -96,6 +103,7 @@ export const taskColumns = [
                         setIsOpen={setIsDeleteModalOpen}
                         task={task}
                     />
+                    <UpdateTaskFormUI isOpen={isEditModale} setIsOpen={setIsEditModale} task={task} />
                 </>
             );
         },

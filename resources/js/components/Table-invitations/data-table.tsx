@@ -52,13 +52,6 @@ export function DataTable({ columns, data }) {
                     </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button className="h-9 w-9" variant="outline">
-                                <FileSpreadsheet />
-                            </Button>
-                        </DropdownMenuTrigger>
-                    </DropdownMenu>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">
                                 Colonnes
                             </Button>

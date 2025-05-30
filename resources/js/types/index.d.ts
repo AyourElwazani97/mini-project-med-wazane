@@ -127,3 +127,13 @@ export interface AddInvForm {
     date_expiration: string;
     [key: string]: any;
 }
+
+export interface UpdateTaskForm {
+    id: number;
+    nom_task: string;
+    description?: string;
+    due_date?: Date | string | null;
+    is_completed: boolean;
+    is_important: boolean;
+    [key: string]: any;
+}
