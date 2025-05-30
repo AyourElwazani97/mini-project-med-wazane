@@ -5,13 +5,32 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Inviations } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { Clipboard, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
+const copyInvitationToClipBoard = async (value: string) => {
+    try {
+        await navigator.clipboard.writeText(value);
+        toast.success("Lien copié dans le presse-papiers !");
+    } catch (error) {
+        console.error("Échec de la copie :", error);
+        toast.error("Erreur lors de la copie du lien");
+    }
+};
 export const inviationColumns = [
     {
         accessorKey: 'nom_ref',
         header: "Nom de L'inviation",
+        cell: ({ row }) => {
+            const value = row.getValue('nom_ref') as string;
+            return (
+                <span className="flex items-center justify-start">
+                    {value}{' '}
+                    <Clipboard onClick={() => copyInvitationToClipBoard(value)} className="hover:text-primary/50 ml-4 h-4 w-4 cursor-pointer" />
+                </span>
+            );
+        },
     },
     {
         accessorKey: 'date_expiration',
