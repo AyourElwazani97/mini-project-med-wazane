@@ -117,6 +117,7 @@ export interface UserProjectAssignment {
 }
 
 export interface Inviations {
+    id: number;
     nom_ref: string;
     date_expiration: string;
 }

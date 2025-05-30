@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Referal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -85,8 +86,29 @@ class ReferalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Referal $referal)
+    public function destroy(Referal $invitation)
     {
-        //
+        // Vérifier que la tâche existe
+        if (!$invitation) {
+            return redirect()->route('invitations.index')
+                ->with('error', 'Invitation non trouvée.');
+        }
+
+        // Vérifier que l'utilisateur est bien le propriétaire
+        if (Auth::user()->type_user !== "admin") {
+            return redirect()->back()
+                ->with('error', 'Action non autorisée.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $invitation->delete();
+            DB::commit();
+            return redirect()->back()
+                ->with('success', 'Invitation supprimée avec succès.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Échec de la suppression.');
+        }
     }
 }

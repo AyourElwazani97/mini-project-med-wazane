@@ -1,12 +1,12 @@
-import { DeleteTaskDialog } from '@/components/Table-tasks/Index';
+import { DeleteInvDialog } from '@/components/Table-invitations/Index';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Task } from '@/types/task';
+import { Inviations } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { MoreHorizontal, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '../ui/badge';
 
 export const inviationColumns = [
     {
@@ -33,16 +33,15 @@ export const inviationColumns = [
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-            const task = row.original as Task;
+            const invitation = row.original as Inviations;
             const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
             const { delete: destroy, processing } = useForm();
             const handleDelete = () => {
-                destroy(route('tasks.destroy', task.id)),
-                    {
-                        onSuccess: () => {
-                            setIsDeleteModalOpen(false);
-                        },
-                    };
+                destroy(route('invitations.destroy', invitation.id), {
+                    onSuccess: () => {
+                        setIsDeleteModalOpen(false);
+                    },
+                });
             };
             return (
                 <>
@@ -61,12 +60,12 @@ export const inviationColumns = [
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <DeleteTaskDialog
+                    <DeleteInvDialog
                         handleDelete={handleDelete}
                         isOpen={isDeleteModalOpen}
                         processing={processing}
                         setIsOpen={setIsDeleteModalOpen}
-                        task={task}
+                        invitation={invitation}
                     />
                 </>
             );

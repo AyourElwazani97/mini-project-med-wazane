@@ -14,16 +14,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { AddInvForm, Flashes, Tasks } from '@/types';
+import { AddInvForm, Flashes, Inviations } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2, PlusCircle } from 'lucide-react';
 import React from 'react';
 
-interface DeleteTaskDialogProps {
+interface DeleteInvDialogProps {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
-    task: Tasks;
+    invitation: Inviations;
     processing: boolean;
     handleDelete: () => void;
 }
@@ -135,13 +135,13 @@ export const AddNewInvitation = ({ isOpen, setIsOpen }: AddNewInvProps) => {
 };
 
 // Composant de dialogue de suppression de tâche
-export function DeleteTaskDialog({ isOpen, setIsOpen, task, processing, handleDelete }: DeleteTaskDialogProps) {
+export function DeleteInvDialog({ isOpen, setIsOpen, invitation, processing, handleDelete }: DeleteInvDialogProps) {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Confirmer la suppression</DialogTitle>
-                    <DialogDescription>Cette action supprimera définitivement la tâche "{task.nom_task}". Voulez-vous continuer ?</DialogDescription>
+                    <DialogDescription>Cette action supprimera définitivement l'invitation "{invitation.nom_ref}". Voulez-vous continuer ?</DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => setIsOpen(false)}>
