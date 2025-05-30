@@ -45,7 +45,7 @@ class ReferalController extends Controller
     {
         $validatedData = $request->validate([
             "nom_ref" => 'required|string|unique:referals,nom_ref',
-            'date_expiration' => 'required|date|after_or_equal:' . Carbon::today()->format('Y-m-d')
+            'date_expiration' => 'required|date|after_or_equal:' . Carbon::today()->format('d-m-Y')
         ]);
 
         DB::beginTransaction();
