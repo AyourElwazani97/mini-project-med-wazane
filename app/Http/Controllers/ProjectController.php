@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-use function PHPUnit\Framework\isEmpty;
-
 class ProjectController extends Controller
 {
 
