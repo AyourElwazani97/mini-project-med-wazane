@@ -202,11 +202,13 @@ export const UpdateTaskFormUI = ({ isOpen, setIsOpen, task }: UpdateTaskDialogPr
     const [isDateOpen, setIsDateOpen] = React.useState(false);
     const { data, setData, put, processing, reset, errors } = useForm<UpdateTaskForm>({
         nom_task: task.nom_task,
-        description: task.description,
-        due_date: format(new Date(task.due_date), "dd-MM-yyyy"),
+        description: task.description || undefined,
+        due_date: format(new Date(task.due_date), 'dd-MM-yyyy'),
         is_completed: task.is_completed || false,
-        is_important: task.is_completed || false,
+        is_important: task.is_important || false,
     });
+
+    console.log(data.is_important)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -217,8 +219,8 @@ export const UpdateTaskFormUI = ({ isOpen, setIsOpen, task }: UpdateTaskDialogPr
                     setIsOpen(false);
                     reset();
                     return;
-                }else {
-                    toast.error(error)
+                } else {
+                    toast.error(error);
                 }
             },
             preserveScroll: true,

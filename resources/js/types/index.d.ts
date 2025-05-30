@@ -129,11 +129,14 @@ export interface AddInvForm {
 }
 
 export interface UpdateTaskForm {
-    id: number;
+   id?: number;  // Optional for forms
     nom_task: string;
-    description?: string;
+    description?: string | null;
     due_date?: Date | string | null;
     is_completed: boolean;
     is_important: boolean;
+    user_id?: number;  // Optional for forms
+    created_at?: string;  // Optional for forms
+    updated_at?: string;  // Optional for forms
     [key: string]: any;
 }
