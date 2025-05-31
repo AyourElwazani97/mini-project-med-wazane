@@ -25,7 +25,20 @@ class ProjectController extends Controller
             ->select(["id", "project_id"])
             ->with(["projects"])
             ->get();
-        $tasks = ProjectTask::where("user_id", Auth::user()->id)->latest()->get();
+        $tasks = ProjectTask::where("user_id", Auth::user()->id)->latest()->get()->map(function ($project) {
+            $dueDate = Carbon::parse($project->due_date);
+            $now = now();
+            if ($dueDate->isPast()) {
+                $project->time_left = 'Échéance passée';
+            } else {
+                $project->time_left = $dueDate->diffForHumans($now, [
+                    'syntax' => 2,
+                    'parts' => 2,
+                    'locale' => 'fr'
+                ]);
+            }
+            return $project;
+        });
         return Inertia::render("Projects/Index", [
             "assignments" => $data,
             "tasks" => $tasks
@@ -56,7 +69,6 @@ class ProjectController extends Controller
                         'locale' => 'fr'
                     ]);
                 }
-
                 return $project;
             });
         return Inertia::render("Projects/Admin/Index", [

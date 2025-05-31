@@ -1,7 +1,8 @@
 import { DeleteTaskDialog } from '@/components/Table-projetcs-tasks/Index';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Auth, User } from '@/types';
+import { Auth } from '@/types';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { Edit, Loader2, MoreHorizontal, Trash2 } from 'lucide-react';
@@ -13,8 +14,7 @@ interface projectTasks {
     status: string;
     project_id: number;
     due_date: Date | string;
-    created_by: User;
-    user_id: User;
+    time_left?: string;
 }
 
 export const taskColumns = [
@@ -40,6 +40,15 @@ export const taskColumns = [
         cell: ({ row }) => {
             const date = row.getValue('due_date') as string;
             return date ? format(date, 'dd-MM-yyyy') : 'Non définie';
+        },
+    },
+
+    {
+        accessorKey: 'time_left',
+        header: 'Temps restant',
+        cell: ({ row }) => {
+            const value = row.getValue('time_left') as string;
+            return value === 'Échéance passée' ? <Badge variant={'destructive'}>Échéance passée</Badge> : <Badge variant={'default'}>{value}</Badge>;
         },
     },
     {

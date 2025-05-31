@@ -55,7 +55,7 @@ class ProjectTaskController extends Controller
         if (!$isUserExistInProjects) {
             return redirect()->back()->with('error', "Impossible d'assigner la tâche : l'utilisateur n'est pas membre de ce projet. Veuillez d'abord l'ajouter au projet avant de lui assigner des tâches.");
         }
-        
+
         try {
             ProjectTask::create([
                 "description" => $validated["description"],
@@ -111,14 +111,29 @@ class ProjectTaskController extends Controller
                 return redirect()->back()
                     ->with('error', 'Projet associé non trouvé');
             }
-
             $project = Project::find($task->project_id);
+
+            if (in_array(strtolower($project->status), ['annulé', 'annuler'])) {
+                return redirect()->back()->with([
+                    "error" => "Modification refusée \n Le projet '{$project->name}' a été annulé le " .
+                        $project->updated_at->format('d/m/Y') . ".",
+                    "Pour effectuer des modifications, le projet doit d'abord être réactivé."
+                ]);
+            }
+
             $due_date = Carbon::parse($project->due_date);
+            $due_date_task = Carbon::parse($task->due_date);
             if ($due_date->isPast()) {
                 return redirect()->back()->with(
                     "error",
                     "La date d'échéance (" . $due_date->format('d/m/Y') . ") est déjà passée. " .
                     "Veuillez modifier la date si vous souhaitez continuer."
+                );
+            }
+            if ($due_date_task->isPast()) {
+                return redirect()->back()->with(
+                    "error",
+                    "La date d'échéance (" . $due_date_task->format('d/m/Y') . ") est déjà passée."
                 );
             }
 
