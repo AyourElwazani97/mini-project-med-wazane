@@ -29,7 +29,7 @@ export function DataTable({ columns, data }) {
             columnVisibility,
         },
         globalFilterFn: (row, _, filterValue) => {
-            const valuesToFilter = [row.getValue('nom_task')];
+            const valuesToFilter = [row.getValue('name'), row.getValue('email')];
             return valuesToFilter.some((value) => String(value).toLowerCase().includes(filterValue.toLowerCase()));
         },
     });
@@ -39,7 +39,7 @@ export function DataTable({ columns, data }) {
             <div className="px-2">
                 <div className="flex items-center gap-2 py-4">
                     <Input
-                        placeholder="Filtrer par nom tâche..."
+                        placeholder="Filtrer par nom, email..."
                         value={globalFilter}
                         onChange={(event) => {
                             setGlobalFilter(event.target.value);
