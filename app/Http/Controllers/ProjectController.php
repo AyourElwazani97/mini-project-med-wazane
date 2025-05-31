@@ -172,7 +172,7 @@ class ProjectController extends Controller
 
         $users = User::where("type_user", "!=", "admin")
             ->get()->toArray();
-        $tasks = ProjectTask::all();
+        $tasks = ProjectTask::with(["user"])->latest()->get();
         return Inertia::render("Projects/Admin/Show", [
             'project' => $project,
             'allUsers' => $allUsers,

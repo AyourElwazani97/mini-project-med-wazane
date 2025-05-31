@@ -12,8 +12,7 @@ interface projectTasks {
     description: string;
     status: string;
     due_date: Date | string;
-    created_by: User;
-    user_id: User;
+    user: User;
 }
 
 export const taskColumns = [
@@ -39,6 +38,14 @@ export const taskColumns = [
         cell: ({ row }) => {
             const date = row.getValue('due_date') as string;
             return date ? format(date, 'dd-MM-yyyy') : 'Non définie';
+        },
+    },
+    {
+        accessorKey: 'user',
+        header: 'Utilisateur',
+        cell: ({ row }) => {
+            const user = row.getValue('user');
+            return user.name;
         },
     },
     {
@@ -83,7 +90,6 @@ export const taskColumns = [
             const auth = usePage().props.auth as Auth;
             const isAdmin = auth.user.type_user === 'admin';
             const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-            const [isEditModale, setIsEditModale] = useState(false);
             const { delete: destroy, processing } = useForm();
 
             const handleDelete = () => {

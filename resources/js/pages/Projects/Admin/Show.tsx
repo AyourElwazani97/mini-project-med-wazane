@@ -22,8 +22,7 @@ interface projectTasks {
     description: string;
     status: string;
     due_date: Date | string;
-    created_by: User;
-    user_id: User;
+    user?: User;
 }
 
 interface PageProps {
@@ -119,7 +118,7 @@ const Index = () => {
                     )}
                 </div>
             </div>
-            <div className='border-t-2 border-dashed'></div>
+            <div className="border-t-2 border-dashed"></div>
             <DataTable data={tasks} columns={taskColumns} project_id={project.id} users={users} />
         </AppLayout>
     );
