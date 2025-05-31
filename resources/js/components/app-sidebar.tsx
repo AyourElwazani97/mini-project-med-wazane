@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { FolderGit2, FolderPlus, LayoutGrid, ListTodo, TicketSlash } from 'lucide-react';
+import { FolderGit2, FolderPlus, LayoutGrid, ListTodo, TicketSlash, Users2Icon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -32,6 +32,11 @@ const mainNavItems: NavItem[] = [
         title: 'Liste Invitations',
         href: '/invitations',
         icon: TicketSlash,
+    },
+    {
+        title: 'Liste Utilisateurs',
+        href: '/utilisateurs',
+        icon: Users2Icon,
     },
 ];
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReferalController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,7 +16,7 @@ Route::get('dashboard', [DashboardController::class, "index"])->middleware(['aut
 Route::resource("tasks", TaskController::class)->middleware("auth");
 Route::resource("projects", ProjectController::class)->middleware("auth");
 Route::resource("invitations", ReferalController::class)->middleware("auth");
-
+Route::resource("utilisateurs", UserController::class)->middleware("auth");
 
 Route::middleware("auth")->group(function () {
     Route::get("admin/projects", [ProjectController::class, "project_admin"])->name("projects.admin");
