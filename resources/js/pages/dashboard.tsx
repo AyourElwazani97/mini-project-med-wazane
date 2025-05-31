@@ -18,10 +18,11 @@ interface DashboardProps {
     total_users: number;
     total_projects: number;
     total_tasks: number;
+    my_total_tasks: number;
     projects: Projects[];
 }
 
-export default function Dashboard({ total_users, total_projects, total_tasks, projects }: DashboardProps) {
+export default function Dashboard({ total_users, total_projects, total_tasks, my_total_tasks, projects }: DashboardProps) {
     const stats = [
         {
             title: 'Utilisateurs',
@@ -40,8 +41,16 @@ export default function Dashboard({ total_users, total_projects, total_tasks, pr
             borderColor: 'border-emerald-200 dark:border-emerald-800',
         },
         {
-            title: 'Tâches',
+            title: 'Total Tâches',
             value: total_tasks,
+            icon: CheckSquare,
+            color: 'text-purple-600 dark:text-purple-400',
+            bgColor: 'bg-purple-50 dark:bg-purple-950/50',
+            borderColor: 'border-purple-200 dark:border-purple-800',
+        },
+        {
+            title: 'Mes Tâches',
+            value: my_total_tasks,
             icon: CheckSquare,
             color: 'text-purple-600 dark:text-purple-400',
             bgColor: 'bg-purple-50 dark:bg-purple-950/50',
@@ -76,7 +85,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, pr
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tableau de Bord" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     {stats.map((stat, index) => (
                         <div
                             key={index}
@@ -132,6 +141,9 @@ export default function Dashboard({ total_users, total_projects, total_tasks, pr
                                                 Statut
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                                                Total Tasks
+                                            </TableHead>
+                                            <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                 Échéance
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
@@ -157,6 +169,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, pr
                                                         {project.status}
                                                     </Badge>
                                                 </TableCell>
+                                                <TableCell className="px-6 py-4">{project.tasks_count}</TableCell>
                                                 <TableCell className="px-6 py-4">
                                                     <div className="text-foreground flex items-center gap-2 text-sm">
                                                         <Calendar className="text-muted-foreground h-4 w-4" />

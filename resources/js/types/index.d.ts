@@ -88,6 +88,7 @@ export interface Projects {
     created_at: string;
     updated_at: string;
     time_left?: string;
+    [key: string]: any;
 }
 
 export interface EachProject {
@@ -129,7 +130,7 @@ export interface AddInvForm {
 }
 
 export interface UpdateTaskForm {
-   id?: number;  // Optional for forms
+    id?: number;  // Optional for forms
     nom_task: string;
     description?: string | null;
     due_date?: Date | string | null;
