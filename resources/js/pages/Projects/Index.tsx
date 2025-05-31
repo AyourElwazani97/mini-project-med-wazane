@@ -2,9 +2,11 @@ import { ProjectGridEachUser } from '@/components/Projects/Index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, UserProjectAssignment } from '@/types';
-import { Head } from '@inertiajs/react';
+import { BreadcrumbItem, Flashes, UserProjectAssignment } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
 import { SlidersHorizontal } from 'lucide-react';
+import React from 'react';
+import { toast } from 'sonner';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Mes Projects',
@@ -17,6 +19,23 @@ interface ProjectGridEachUserProps {
 }
 
 const Index = ({ assignments }: ProjectGridEachUserProps) => {
+    const { flash } = usePage().props as { flash?: Flashes };
+    React.useEffect(() => {
+        if (flash) {
+            if (flash.success) {
+                toast.success(flash.success);
+                router.reload({
+                    only: ['flash'],
+                });
+            }
+            if (flash.error) {
+                toast.error(flash.error);
+                router.reload({
+                    only: ['flash'],
+                });
+            }
+        }
+    }, [flash]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Projects" />

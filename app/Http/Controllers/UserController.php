@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         if (Auth::user()->type_user !== "admin") {
             return redirect()->back()
-                ->with('error', 'Action non autorisée.');
+                ->with('error', "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
         }
         $query = User::query()->latest();
         if ($request->input("type") !== null) {
@@ -36,7 +36,7 @@ class UserController extends Controller
         // Check if current user is admin
         if (Auth::user()->type_user !== "admin") {
             return redirect()->back()
-                ->with('error', 'Action non autorisée.');
+                ->with('error', "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
         }
 
         try {
