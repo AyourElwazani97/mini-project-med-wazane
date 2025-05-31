@@ -124,9 +124,20 @@ class ProjectController extends Controller
             'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
+
+
         $project = Project::find($id);
         if (!$project) {
             return redirect()->back()->with('error', 'Projet non trouvé');
+        }
+
+        $due_date = Carbon::parse($project->due_date);
+        if ($due_date->isPast()) {
+            return redirect()->back()->with(
+                "error",
+                "La date d'échéance (" . $due_date->format('d/m/Y') . ") est déjà passée. " .
+                "Veuillez modifier la date si vous souhaitez continuer."
+            );
         }
 
         $userId = $validated['user_id'];
@@ -226,7 +237,14 @@ class ProjectController extends Controller
                 ->back()
                 ->with('error', "Projet introuvable : Le projet spécifié n'existe pas ou a déjà été supprimé.");
         }
-
+        $due_date = Carbon::parse($project->due_date);
+        if ($due_date->isPast()) {
+            return redirect()->back()->with(
+                "error",
+                "La date d'échéance (" . $due_date->format('d/m/Y') . ") est déjà passée. " .
+                "Veuillez modifier la date si vous souhaitez continuer."
+            );
+        }
         try {
             $validStatuses = ['En attente', 'En cours', 'Terminé', 'Annulé'];
 
