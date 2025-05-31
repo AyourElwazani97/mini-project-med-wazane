@@ -1,4 +1,6 @@
 import { ProjectGridEachUser } from '@/components/Projects/Index';
+import { taskColumns } from '@/components/Table-projetcs-tasks-users/Column';
+import { DataTable } from '@/components/Table-projetcs-tasks-users/data-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
@@ -13,12 +15,18 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/projects',
     },
 ];
-
+interface Tasks {
+    id: number;
+    description: string;
+    status: string;
+    due_date: Date | string;
+}
 interface ProjectGridEachUserProps {
-    assignments?: UserProjectAssignment[]; // Optional with default empty array
+    assignments?: UserProjectAssignment[];
+    tasks?: Tasks[];
 }
 
-const Index = ({ assignments }: ProjectGridEachUserProps) => {
+const Index = ({ assignments, tasks }: ProjectGridEachUserProps) => {
     const { flash } = usePage().props as { flash?: Flashes };
     React.useEffect(() => {
         if (flash) {
@@ -47,9 +55,11 @@ const Index = ({ assignments }: ProjectGridEachUserProps) => {
                     <SlidersHorizontal />
                 </Button>
             </div>
-            <div className="min-h-8/12 w-full p-2">
+            <div className="h-full w-full p-2">
                 <ProjectGridEachUser assignments={assignments} />
             </div>
+            <div className="border-t-2 border-dashed"></div>
+            <DataTable columns={taskColumns} data={tasks} />
         </AppLayout>
     );
 };

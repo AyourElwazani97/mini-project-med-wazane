@@ -50,7 +50,7 @@ const Index = ({ projects }: ProjectListProps) => {
                     <SlidersHorizontal />
                 </Button>
             </div>
-            <div className="min-h-8/12 w-full p-2">
+            <div className="h-full w-full p-2">
                 <ProjectGrid projects={projects} />
             </div>
             <AddNewProjectForm isOpen={isOpen} setIsOpen={setIsOpen} />

@@ -497,7 +497,6 @@ const UpdateProjectForm = ({ isOpen, setIsOpen, project }: UpdateProjectProps) =
 };
 
 export function ProjectGridEachUser({ assignments = [] }: ProjectGridEachUserProps) {
-    console.log(assignments);
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return new Intl.DateTimeFormat('fr-FR', {

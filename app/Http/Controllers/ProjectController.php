@@ -25,8 +25,10 @@ class ProjectController extends Controller
             ->select(["id", "project_id"])
             ->with(["projects"])
             ->get();
+        $tasks = ProjectTask::where("user_id", Auth::user()->id)->latest()->get();
         return Inertia::render("Projects/Index", [
-            "assignments" => $data
+            "assignments" => $data,
+            "tasks" => $tasks
         ]);
     }
 

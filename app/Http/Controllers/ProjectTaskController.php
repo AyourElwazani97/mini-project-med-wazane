@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\ProjectTask;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -70,9 +71,39 @@ class ProjectTaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProjectTask $projectTask)
+    public function update(Request $request, int $id)
     {
-        //
+        // Validate request
+        $validated = $request->validate([
+            'status' => 'required|in:en_attente,en_cours,terminé',
+        ]);
+
+        try {
+            // Find the task
+            $task = ProjectTask::find($id);
+
+            if (!$task) {
+                return redirect()->back()
+                    ->with('error', 'Tâche non trouvée');
+            }
+
+            // Check if project exists
+            if (!Project::find($task->project_id)) {
+                return redirect()->back()
+                    ->with('error', 'Projet associé non trouvé');
+            }
+
+            // Update task status
+            $task->status = $validated['status'];
+            $task->save();
+
+            return redirect()->back()
+                ->with('success', 'Statut de la tâche mis à jour avec succès');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour');
+        }
     }
 
     /**
