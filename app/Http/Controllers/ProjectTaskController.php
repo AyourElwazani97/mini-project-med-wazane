@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\ProjectTask;
+use App\Models\ProjectUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,15 @@ class ProjectTaskController extends Controller
                 "Veuillez modifier la date si vous souhaitez continuer."
             );
         }
+        $isUserExistInProjects = ProjectUser::where("project_id", $project->id)->where("user_id", $validated["user_id"])->exists();
+        $isUserExistInProjects = ProjectUser::where('project_id', $project->id)
+            ->where('user_id', $validated['user_id'])
+            ->exists();
 
+        if (!$isUserExistInProjects) {
+            return redirect()->back()->with('error', "Impossible d'assigner la tâche : l'utilisateur n'est pas membre de ce projet. Veuillez d'abord l'ajouter au projet avant de lui assigner des tâches.");
+        }
+        
         try {
             ProjectTask::create([
                 "description" => $validated["description"],

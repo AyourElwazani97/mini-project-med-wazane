@@ -155,12 +155,13 @@ export const AddNewProjectForm = ({ isOpen, setIsOpen }: AddNewProjectProps) => 
                                     <Calendar
                                         mode="single"
                                         selected={new Date(data.due_date)}
-                                        onSelect={(value) => {
+                                        onSelect={(value: string) => {
                                             if (value) {
                                                 setData('due_date', format(value, 'dd-MM-yyyy'));
                                                 setIsDateOpen(false);
                                             }
                                         }}
+                                        fromDate={new Date()}
                                         initialFocus
                                     />
                                 </PopoverContent>
@@ -313,9 +314,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                                                             </DropdownMenuSubContent>
                                                         </DropdownMenuSub>
                                                         <Link href={route('projects.show', project.id)}>
-                                                            <DropdownMenuItem
-                                                                className="cursor-pointer"
-                                                            >
+                                                            <DropdownMenuItem className="cursor-pointer">
                                                                 <Eye className="mr-2 h-4 w-4" />
                                                                 Voir Plus
                                                             </DropdownMenuItem>
