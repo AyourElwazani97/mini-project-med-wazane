@@ -1,7 +1,6 @@
 import { DeleteTaskDialog, UpdateTaskFormUI } from '@/components/Table-tasks/Index';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Task } from '@/types/task';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -62,12 +61,13 @@ export const taskColumns = [
             const { delete: destroy, processing } = useForm();
 
             const handleDelete = () => {
-                destroy(route('tasks.destroy', task.id)),
-                    {
-                        onSuccess: () => {
-                            setIsDeleteModalOpen(false);
-                        },
-                    };
+                destroy(route('tasks.destroy', task.id), {
+                    onSuccess: () => {
+                        setIsDeleteModalOpen(false);
+                    },
+                    preserveScroll: true,
+                    preserveState: true,
+                });
             };
 
             return (
