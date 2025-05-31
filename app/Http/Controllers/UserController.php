@@ -3,18 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->type_user !== "admin") {
             return redirect()->back()
                 ->with('error', 'Action non autorisée.');
         }
-        $users = User::latest()->get();
+        $query = User::query()->latest();
+        if ($request->input("type") !== null) {
+            $query->where("type_user", $request->input("type"));
+        }
+        if ($request->input("start_date") !== null && $request->input("end_date")) {
+            $query->whereBetween("created_at", [
+                Carbon::parse($request->input("start_date"))->format("Y-m-d"),
+                Carbon::parse($request->input("end_date"))->format("Y-m-d"),
+            ]);
+        }
+        $users = $query->get();
         return Inertia::render("Users/Index", ["users" => $users]);
     }
 

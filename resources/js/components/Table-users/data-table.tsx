@@ -2,14 +2,16 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { FiltreUtilisateursModal } from '@/components/Users/Index';
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
-import { FileSpreadsheet, Plus } from 'lucide-react';
+import { FunnelPlus } from 'lucide-react';
 import { Fragment, useState } from 'react';
 export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [globalFilter, setGlobalFilter] = useState('');
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const table = useReactTable({
         data,
@@ -47,8 +49,8 @@ export function DataTable({ columns, data }) {
                     />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button className="h-9 w-9" variant="outline">
-                                <FileSpreadsheet />
+                            <Button className="h-9 w-9" variant="outline" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                                <FunnelPlus />
                             </Button>
                         </DropdownMenuTrigger>
                     </DropdownMenu>
@@ -120,6 +122,7 @@ export function DataTable({ columns, data }) {
                     </Button>
                 </div>
             </div>
+            <FiltreUtilisateursModal isOpen={isFilterOpen} setIsOpen={setIsFilterOpen} />
         </Fragment>
     );
 }

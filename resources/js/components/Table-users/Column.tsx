@@ -15,7 +15,7 @@ interface Users {
     updated_at: Date | string;
 }
 
-export const taskColumns = [
+export const usersColumns = [
     {
         accessorKey: 'name',
         header: 'Nom',
@@ -53,7 +53,6 @@ export const taskColumns = [
         cell: ({ row }) => {
             const user = row.original as Users;
             const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-            const [isEditModale, setIsEditModale] = useState(false);
             const { delete: destroy, processing } = useForm();
 
             const handleDelete = () => {

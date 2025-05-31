@@ -1,4 +1,4 @@
-import { taskColumns } from '@/Components/Table-users/Column';
+import { usersColumns } from '@/Components/Table-users/Column';
 import { DataTable } from '@/Components/Table-users/data-table';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Flashes } from '@/types';
@@ -47,7 +47,7 @@ const Index = ({ users }: UsersListProps) => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Liste Utilisateurs" />
-            <DataTable data={users} columns={taskColumns} />
+            <DataTable data={users} columns={usersColumns} />
         </AppLayout>
     );
 };
