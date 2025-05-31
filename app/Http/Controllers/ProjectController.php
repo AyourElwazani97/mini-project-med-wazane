@@ -241,7 +241,7 @@ class ProjectController extends Controller
         }
 
         // List of protected statuses that cannot be deleted
-        $protectedStatuses = ['En cours', 'En attente'];
+        $protectedStatuses = ['En cours', 'En attente', 'en cours','en attente'];
 
         if (in_array($project->status, $protectedStatuses)) {
             return redirect()
