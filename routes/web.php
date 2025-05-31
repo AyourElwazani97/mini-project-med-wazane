@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectTaskController;
 use App\Http\Controllers\ReferalController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
@@ -17,6 +18,7 @@ Route::resource("tasks", TaskController::class)->middleware("auth");
 Route::resource("projects", ProjectController::class)->middleware("auth");
 Route::resource("invitations", ReferalController::class)->middleware("auth");
 Route::resource("utilisateurs", UserController::class)->middleware("auth");
+Route::resource("projecttasks", ProjectTaskController::class)->middleware("auth");
 
 Route::middleware("auth")->group(function () {
     Route::get("admin/projects", [ProjectController::class, "project_admin"])->name("projects.admin");

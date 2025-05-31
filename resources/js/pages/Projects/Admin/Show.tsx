@@ -1,3 +1,5 @@
+import { taskColumns } from '@/components/Table-projetcs-tasks/Column';
+import { DataTable } from '@/components/Table-projetcs-tasks/data-table';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, EachProject, Flashes, User } from '@/types';
@@ -14,12 +16,24 @@ interface ProjectUser {
     user_id: number;
     users: User;
 }
+
+interface projectTasks {
+    id: number;
+    description: string;
+    status: string;
+    due_date: Date | string;
+    created_by: User;
+    user_id: User;
+}
+
 interface PageProps {
     flash?: Flashes;
     project: EachProject & {
         project_users: ProjectUser[];
     };
     allUsers: User[];
+    users: User[];
+    tasks: projectTasks[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -30,8 +44,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const Index = () => {
-    const { flash, project, allUsers } = usePage().props as PageProps;
-
+    const { flash, project, allUsers, users, tasks } = usePage().props as PageProps;
     React.useEffect(() => {
         if (flash) {
             if (flash.success) {
@@ -106,6 +119,8 @@ const Index = () => {
                     )}
                 </div>
             </div>
+            <div className='border-t-2 border-dashed'></div>
+            <DataTable data={tasks} columns={taskColumns} project_id={project.id} users={users} />
         </AppLayout>
     );
 };

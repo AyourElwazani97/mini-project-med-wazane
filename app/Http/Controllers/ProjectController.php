@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\ProjectTask;
 use App\Models\ProjectUser;
 use App\Models\User;
 use Carbon\Carbon;
@@ -146,9 +147,14 @@ class ProjectController extends Controller
             ->where("type_user", "!=", "admin")
             ->get()->toArray();
 
+        $users = User::where("type_user", "!=", "admin")
+            ->get()->toArray();
+        $tasks = ProjectTask::all();
         return Inertia::render("Projects/Admin/Show", [
             'project' => $project,
             'allUsers' => $allUsers,
+            'users' => $users,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -241,7 +247,7 @@ class ProjectController extends Controller
         }
 
         // List of protected statuses that cannot be deleted
-        $protectedStatuses = ['En cours', 'En attente', 'en cours','en attente'];
+        $protectedStatuses = ['En cours', 'En attente', 'en cours', 'en attente'];
 
         if (in_array($project->status, $protectedStatuses)) {
             return redirect()

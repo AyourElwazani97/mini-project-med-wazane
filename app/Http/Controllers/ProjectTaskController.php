@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectTask;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectTaskController extends Controller
 {
@@ -12,7 +14,6 @@ class ProjectTaskController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -28,7 +29,26 @@ class ProjectTaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'description' => 'required|string|max:2000',
+            'date_echeance' => 'required|date|after_or_equal:today',
+            'user_id' => 'required|integer|exists:users,id',
+            'project_id' => 'required|integer|exists:projects,id',
+        ]);
+
+        try {
+            ProjectTask::create([
+                "description" => $validated["description"],
+                "due_date" => Carbon::parse($validated["date_echeance"])->format('Y-m-d'),
+                "user_id" => $validated["user_id"],
+                "project_id" => $validated["project_id"],
+                "created_by" => Auth::user()->id,
+            ]);
+
+            return redirect()->back()->with('success', 'Tâche créée avec succès!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la création de la tâche.');
+        }
     }
 
     /**
@@ -58,8 +78,35 @@ class ProjectTaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProjectTask $projectTask)
+    public function destroy(int $id)
     {
-        //
+        // Vérifier les permissions
+        if (Auth::user()->type_user !== "admin") {
+            return redirect()->back()
+                ->with('error', "Accès refusé : Vous n'avez pas les autorisations nécessaires pour effectuer cette action.");
+        }
+
+        // Trouver la tâche ou retourner une erreur
+        $task = ProjectTask::find($id);
+        if (!$task) {
+            return redirect()->back()
+                ->with('error', "Tâche non trouvée : La tâche spécifiée n'existe pas.");
+        }
+
+        // Vérifier le statut de la tâche
+        if ($task->status === 'en_cours') {
+            return redirect()->back()
+                ->with('error', "Impossible de supprimer : La tâche est en cours. Veuillez la terminer ou la remettre en attente avant suppression.");
+        }
+
+        try {
+            $task->delete();
+            return redirect()->back()
+                ->with('success', 'Tâche supprimée avec succès.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Une erreur est survenue lors de la suppression ');
+        }
     }
 }
