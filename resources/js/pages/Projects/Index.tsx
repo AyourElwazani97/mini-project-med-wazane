@@ -47,14 +47,6 @@ const Index = ({ assignments, tasks }: ProjectGridEachUserProps) => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Projects" />
-            <div className="flex w-full justify-start gap-2 p-2">
-                <div>
-                    <Input type="text" placeholder="Filtrer par Nom"></Input>
-                </div>
-                <Button variant="outline" size="icon">
-                    <SlidersHorizontal />
-                </Button>
-            </div>
             <div className="h-full w-full p-2">
                 <ProjectGridEachUser assignments={assignments} />
             </div>

@@ -2,7 +2,7 @@ import { AddNewProjectForm, ProjectGrid } from '@/components/Projects/Index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Flashes, Projects, Users } from '@/types';
+import { BreadcrumbItem, Flashes, Projects } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Plus, SlidersHorizontal } from 'lucide-react';
 import React, { useState } from 'react';
@@ -19,6 +19,7 @@ interface ProjectListProps {
 }
 const Index = ({ projects }: ProjectListProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
     const { flash } = usePage().props as { flash?: Flashes };
     React.useEffect(() => {
         if (flash) {
@@ -36,12 +37,14 @@ const Index = ({ projects }: ProjectListProps) => {
             }
         }
     }, [flash]);
+
+    const filteredData = projects.filter((prj) => prj.name.toLowerCase().includes(searchInput.toLowerCase()));
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Projets" />
             <div className="flex w-full justify-start gap-2 p-2">
                 <div>
-                    <Input type="text" placeholder="Filtrer par Nom"></Input>
+                    <Input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" placeholder="Filtrer par Nom"></Input>
                 </div>
                 <Button variant="outline" size="icon" onClick={() => setIsOpen(true)}>
                     <Plus />
@@ -51,7 +54,7 @@ const Index = ({ projects }: ProjectListProps) => {
                 </Button>
             </div>
             <div className="h-full w-full p-2">
-                <ProjectGrid projects={projects} />
+                <ProjectGrid projects={filteredData} />
             </div>
             <AddNewProjectForm isOpen={isOpen} setIsOpen={setIsOpen} />
         </AppLayout>
