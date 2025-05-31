@@ -37,6 +37,16 @@ class ProjectTaskController extends Controller
             'project_id' => 'required|integer|exists:projects,id',
         ]);
 
+        $project = Project::find($validated["project_id"]);
+        $due_date = Carbon::parse($project->due_date);
+        if ($due_date->isPast()) {
+            return redirect()->back()->with(
+                "error",
+                "La date d'échéance (" . $due_date->format('d/m/Y') . ") est déjà passée. " .
+                "Veuillez modifier la date si vous souhaitez continuer."
+            );
+        }
+
         try {
             ProjectTask::create([
                 "description" => $validated["description"],
@@ -91,6 +101,16 @@ class ProjectTaskController extends Controller
             if (!Project::find($task->project_id)) {
                 return redirect()->back()
                     ->with('error', 'Projet associé non trouvé');
+            }
+
+            $project = Project::find($task->project_id);
+            $due_date = Carbon::parse($project->due_date);
+            if ($due_date->isPast()) {
+                return redirect()->back()->with(
+                    "error",
+                    "La date d'échéance (" . $due_date->format('d/m/Y') . ") est déjà passée. " .
+                    "Veuillez modifier la date si vous souhaitez continuer."
+                );
             }
 
             // Update task status
