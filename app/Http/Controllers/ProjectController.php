@@ -124,8 +124,6 @@ class ProjectController extends Controller
             'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
-
-
         $project = Project::find($id);
         if (!$project) {
             return redirect()->back()->with('error', 'Projet non trouvé');
@@ -146,6 +144,17 @@ class ProjectController extends Controller
             ->where('user_id', $userId)
             ->exists();
 
+        $isUserHasTasks = ProjectTask::where('user_id', $userId)
+            ->where('project_id', $id)
+            ->exists();
+
+        if ($isUserHasTasks) {
+            return redirect()->back()->with(
+                'error',
+                "Impossible de supprimer cet utilisateur du projet car il a des tâches assignées. " .
+                "Veuillez d'abord réassigner ou supprimer ses tâches avant de le retirer du projet."
+            );
+        }
         if ($isUserInProject) {
             $project->project_users()->where('user_id', $userId)->delete();
             $message = 'Utilisateur retiré du projet avec succès';
