@@ -44,9 +44,19 @@ class ProjectController extends Controller
         $projectUserIds = ProjectUser::pluck('user_id')->toArray();
         $data = Project::with(["project_users"])
             ->where("created_by", request()->user()->id)->latest()->get()->map(function ($project) {
-                $project->time_left = Carbon::parse($project->created_at)
-                    ->locale("fr")
-                    ->diffForHumans(Carbon::parse($project->due_date));
+                $dueDate = Carbon::parse($project->due_date);
+                $now = now();
+
+                if ($dueDate->isPast()) {
+                    $project->time_left = 'Échéance passée';
+                } else {
+                    $project->time_left = $dueDate->diffForHumans($now, [
+                        'syntax' => 2,
+                        'parts' => 2,
+                        'locale' => 'fr'
+                    ]);
+                }
+
                 return $project;
             });
         return Inertia::render("Projects/Admin/Index", [

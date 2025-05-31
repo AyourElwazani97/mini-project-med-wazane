@@ -141,7 +141,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                                 Statut
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
-                                                Total Tasks
+                                                Total Tâches
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                 Échéance
@@ -180,7 +180,11 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                                     {project.time_left ? (
                                                         <div className="text-foreground flex items-center gap-2 text-sm">
                                                             <Clock className="text-muted-foreground h-4 w-4" />
-                                                            {project.time_left}
+                                                            {project.time_left === 'Échéance passée' ? (
+                                                                <Badge variant={'destructive'}>Échéance passée</Badge>
+                                                            ) : (
+                                                                <Badge variant={'default'}>{project.time_left}</Badge>
+                                                            )}
                                                         </div>
                                                     ) : (
                                                         <span className="text-muted-foreground text-sm">-</span>
