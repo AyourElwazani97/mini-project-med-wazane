@@ -129,6 +129,7 @@ export const AddNewTask = ({ isOpen, setIsOpen }: AddNewTaskProps) => {
                                             }));
                                             setIsDateOpen(false);
                                         }}
+                                        fromDate={new Date()}
                                         initialFocus
                                     />
                                 </PopoverContent>
@@ -208,7 +209,7 @@ export const UpdateTaskFormUI = ({ isOpen, setIsOpen, task }: UpdateTaskDialogPr
         is_important: task.is_important || false,
     });
 
-    console.log(data.is_important)
+    console.log(data.is_important);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -289,6 +290,7 @@ export const UpdateTaskFormUI = ({ isOpen, setIsOpen, task }: UpdateTaskDialogPr
                                             }));
                                             setIsDateOpen(false);
                                         }}
+                                        fromDate={new Date()}
                                         initialFocus
                                     />
                                 </PopoverContent>

@@ -466,6 +466,7 @@ const UpdateProjectForm = ({ isOpen, setIsOpen, project }: UpdateProjectProps) =
                                                 setIsDateOpen(false);
                                             }
                                         }}
+                                        fromDate={new Date()}
                                         initialFocus
                                     />
                                 </PopoverContent>

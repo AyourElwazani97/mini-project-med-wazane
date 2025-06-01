@@ -106,13 +106,13 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                 </div>
                             </div>
                             <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-current to-transparent opacity-20" />
-                            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/10" />
+                            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/10 dark:stroke-neutral-100/10" />
                         </div>
                     ))}
                 </div>
 
                 <div className="border-sidebar-border/70 dark:border-sidebar-border bg-background relative flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/10" />
+                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/10 dark:stroke-neutral-100/10" />
                     <div className="flex h-full flex-col">
                         <div className="border-border bg-muted/50 border-b px-6 py-4">
                             <div className="flex items-center gap-2">
