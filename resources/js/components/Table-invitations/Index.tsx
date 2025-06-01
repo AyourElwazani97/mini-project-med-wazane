@@ -105,6 +105,7 @@ export const AddNewInvitation = ({ isOpen, setIsOpen }: AddNewInvProps) => {
                                             }));
                                             setIsDateOpen(false);
                                         }}
+                                        fromDate={new Date()}
                                         initialFocus
                                     />
                                 </PopoverContent>
@@ -141,7 +142,9 @@ export function DeleteInvDialog({ isOpen, setIsOpen, invitation, processing, han
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Confirmer la suppression</DialogTitle>
-                    <DialogDescription>Cette action supprimera définitivement l'invitation "{invitation.nom_ref}". Voulez-vous continuer ?</DialogDescription>
+                    <DialogDescription>
+                        Cette action supprimera définitivement l'invitation "{invitation.nom_ref}". Voulez-vous continuer ?
+                    </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => setIsOpen(false)}>

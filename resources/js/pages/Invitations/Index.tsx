@@ -36,7 +36,6 @@ const Index = ({ invitations }: InviationListProps) => {
             }
         }
     }, [flash]);
-    console.log(invitations)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Mes Invitations" />

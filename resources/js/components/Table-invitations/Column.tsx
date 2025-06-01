@@ -12,10 +12,10 @@ import { toast } from 'sonner';
 const copyInvitationToClipBoard = async (value: string) => {
     try {
         await navigator.clipboard.writeText(value);
-        toast.success("Lien copié dans le presse-papiers !");
+        toast.success('Lien copié dans le presse-papiers !');
     } catch (error) {
-        console.error("Échec de la copie :", error);
-        toast.error("Erreur lors de la copie du lien");
+        console.error('Échec de la copie :', error);
+        toast.error('Erreur lors de la copie du lien');
     }
 };
 export const inviationColumns = [
@@ -41,10 +41,10 @@ export const inviationColumns = [
         },
     },
     {
-        accessorKey: 'isExpired',
+        accessorKey: 'time_left',
         header: 'Status',
         cell: ({ row }) => {
-            const isExpired = row.getValue('isExpired') as boolean;
+            const isExpired = row.getValue('time_left') === 'Éxpiré';
             return isExpired ? <Badge variant={'destructive'}>Expiré</Badge> : <Badge variant={'default'}>Valid</Badge>;
         },
     },

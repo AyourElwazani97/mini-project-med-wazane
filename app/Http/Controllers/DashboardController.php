@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\ProjectTask;
+use App\Models\Referal;
 use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,6 +20,20 @@ class DashboardController extends Controller
         $total_projects = Project::count();
         $total_tasks = Task::count();
         $my_total_tasks = Task::where("user_id", Auth::user()->id)->count();
+        $invitations = Referal::latest()->get()->map(function ($ref) {
+            $dueDate = Carbon::parse($ref->date_expiration);
+            $now = now();
+            if ($dueDate->isPast()) {
+                $ref->time_left = 'Éxpiré';
+            } else {
+                $ref->time_left = $dueDate->diffForHumans($now, [
+                    'syntax' => 2,
+                    'parts' => 2,
+                    'locale' => 'fr'
+                ]);
+            }
+            return $ref;
+        });
         $projects = Project::withCount(["tasks", "project_users"])
             ->latest()
             ->get()
@@ -44,7 +59,8 @@ class DashboardController extends Controller
             "total_tasks" => $total_tasks,
             "projects" => $projects,
             "my_total_tasks" => $my_total_tasks,
-            "tasks" => $tasks
+            "tasks" => $tasks,
+            "invitations" => $invitations
         ]);
     }
 }

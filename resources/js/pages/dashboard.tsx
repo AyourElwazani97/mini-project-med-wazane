@@ -1,9 +1,10 @@
+import InvitationsTable from '@/components/Dashboard/InvitationsTable';
 import TasksTable from '@/components/Dashboard/TasksTable';
 import { Badge } from '@/components/ui/badge';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem, Projects, User } from '@/types';
+import type { BreadcrumbItem, Inviations, Projects, User } from '@/types';
 import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { Calendar, CheckSquare, Clock, FileCheck2, FolderOpen, Users } from 'lucide-react';
@@ -29,9 +30,10 @@ interface DashboardProps {
     my_total_tasks: number;
     projects: Projects[];
     tasks: projectTasks[];
+    invitations: Inviations[];
 }
 
-export default function Dashboard({ total_users, total_projects, total_tasks, my_total_tasks, projects, tasks }: DashboardProps) {
+export default function Dashboard({ total_users, total_projects, total_tasks, my_total_tasks, projects, tasks, invitations }: DashboardProps) {
     const stats = [
         {
             title: 'Utilisateurs',
@@ -211,6 +213,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                     </div>
                 </div>
                 <TasksTable tasks={tasks} />
+                <InvitationsTable invitations={invitations} />
             </div>
         </AppLayout>
     );

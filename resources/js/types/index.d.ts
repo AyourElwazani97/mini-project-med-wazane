@@ -121,6 +121,7 @@ export interface Inviations {
     id: number;
     nom_ref: string;
     date_expiration: string;
+    time_left?: string;
 }
 
 export interface AddInvForm {

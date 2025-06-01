@@ -21,9 +21,19 @@ class ReferalController extends Controller
         }
         /* DB::table('referals')->select("id","nom_ref", "date_expiration")->get(); */
         $today = Carbon::today();
-        $invitations = Referal::select("id", "nom_ref", "date_expiration")->latest()->get()->map(function ($invitation) use ($today) {
-            $invitation->isExpired = $today->gt($invitation->date_expiration);
-            return $invitation;
+        $invitations = Referal::select("id", "nom_ref", "date_expiration")->latest()->get()->map(function ($ref) {
+            $dueDate = Carbon::parse($ref->date_expiration);
+            $now = now();
+            if ($dueDate->isPast()) {
+                $ref->time_left = 'Éxpiré';
+            } else {
+                $ref->time_left = $dueDate->diffForHumans($now, [
+                    'syntax' => 2,
+                    'parts' => 2,
+                    'locale' => 'fr'
+                ]);
+            }
+            return $ref;
         });
         return Inertia::render("Invitations/Index", [
             "invitations" => $invitations
