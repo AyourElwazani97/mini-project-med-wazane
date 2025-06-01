@@ -1,11 +1,12 @@
+import TasksTable from '@/components/Dashboard/TasksTable';
 import { Badge } from '@/components/ui/badge';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import type { BreadcrumbItem, Projects } from '@/types';
+import type { BreadcrumbItem, Projects, User } from '@/types';
 import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { Calendar, CheckSquare, Clock, FolderOpen, User, Users } from 'lucide-react';
+import { Calendar, CheckSquare, Clock, FileCheck2, FolderOpen, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,6 +14,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+interface projectTasks {
+    id: number;
+    description: string;
+    status: string;
+    due_date: Date | string;
+    user?: User;
+}
 
 interface DashboardProps {
     total_users: number;
@@ -20,9 +28,10 @@ interface DashboardProps {
     total_tasks: number;
     my_total_tasks: number;
     projects: Projects[];
+    tasks: projectTasks[];
 }
 
-export default function Dashboard({ total_users, total_projects, total_tasks, my_total_tasks, projects }: DashboardProps) {
+export default function Dashboard({ total_users, total_projects, total_tasks, my_total_tasks, projects, tasks }: DashboardProps) {
     const stats = [
         {
             title: 'Utilisateurs',
@@ -43,7 +52,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
         {
             title: 'Total Tâches',
             value: total_tasks,
-            icon: CheckSquare,
+            icon: FileCheck2,
             color: 'text-purple-600 dark:text-purple-400',
             bgColor: 'bg-purple-50 dark:bg-purple-950/50',
             borderColor: 'border-purple-200 dark:border-purple-800',
@@ -74,17 +83,13 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        });
+        return format(dateString, 'dd-MM-yyyy');
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tableau de Bord" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-hidden rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     {stats.map((stat, index) => (
                         <div
@@ -107,8 +112,8 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                 </div>
 
                 <div className="border-sidebar-border/70 dark:border-sidebar-border bg-background relative flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/10" />
                     <div className="flex h-full flex-col">
-                        {/* Header */}
                         <div className="border-border bg-muted/50 border-b px-6 py-4">
                             <div className="flex items-center gap-2">
                                 <FolderOpen className="text-muted-foreground h-5 w-5" />
@@ -118,10 +123,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                 </span>
                             </div>
                         </div>
-
-                        {/* Table */}
-                        <div className="flex-1 overflow-auto">
-                            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/10" />
+                        <div className="flex-1 overflow-hidden">
                             {projects.length === 0 ? (
                                 <div className="flex h-full items-center justify-center">
                                     <div className="text-center">
@@ -131,7 +133,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                     </div>
                                 </div>
                             ) : (
-                                <Table>
+                                <Table className="block min-h-[300px]">
                                     <TableHeader className="bg-muted/30 sticky top-0 backdrop-blur-sm">
                                         <TableRow className="border-border border-b hover:bg-transparent">
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
@@ -141,7 +143,10 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                                 Statut
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
-                                                Total Tâches
+                                                Tâches
+                                            </TableHead>
+                                            <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
+                                                Utilisateurs
                                             </TableHead>
                                             <TableHead className="text-muted-foreground px-6 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                 Échéance
@@ -170,6 +175,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4">{project.tasks_count}</TableCell>
+                                                <TableCell className="px-6 py-4">{project.project_users_count}</TableCell>
                                                 <TableCell className="px-6 py-4">
                                                     <div className="text-foreground flex items-center gap-2 text-sm">
                                                         <Calendar className="text-muted-foreground h-4 w-4" />
@@ -192,8 +198,8 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4">
                                                     <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                                                        <User className="h-4 w-4" />
-                                                        {format(project.created_at, 'dd-MM-yyyy HH:mm:ss')}
+                                                        <Clock className="text-muted-foreground h-4 w-4" />
+                                                        {format(project.created_at, 'dd-MM-yyyy')}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -204,6 +210,7 @@ export default function Dashboard({ total_users, total_projects, total_tasks, my
                         </div>
                     </div>
                 </div>
+                <TasksTable tasks={tasks} />
             </div>
         </AppLayout>
     );

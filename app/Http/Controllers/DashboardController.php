@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $total_projects = Project::count();
         $total_tasks = Task::count();
         $my_total_tasks = Task::where("user_id", Auth::user()->id)->count();
-        $projects = Project::withCount(["tasks"])
+        $projects = Project::withCount(["tasks", "project_users"])
             ->latest()
             ->get()
             ->map(function ($project) {
@@ -35,16 +35,16 @@ class DashboardController extends Controller
                         'locale' => 'fr'
                     ]);
                 }
-
                 return $project;
             });
-        ;
+        $tasks = ProjectTask::with(["user"])->latest()->get();
         return Inertia::render('dashboard', [
             "total_users" => $total_users,
             "total_projects" => $total_projects,
             "total_tasks" => $total_tasks,
             "projects" => $projects,
             "my_total_tasks" => $my_total_tasks,
+            "tasks" => $tasks
         ]);
     }
 }
